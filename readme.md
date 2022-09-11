@@ -1,6 +1,6 @@
-Austin Hyde
-Romsev Charles
-Faith Edwards
+Austin Hyde  
+Romsev Charles  
+Faith Edwards  
 
 
 This project was brought upon by the request of one of the ISUE Lab members, the message was:
