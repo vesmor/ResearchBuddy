@@ -39,7 +39,11 @@ ___
 	graph TD;
 	website_scraper.py--This code will scrape the website-->Website;
     Website-->Scraper_Output;
-    Scraper_Output-->Calendar;
-    Calendar-->Bot((Bot));
-    C-->D;
+    Scraper_Output--inserts new dates straight to-->Calendar;
+    Calendar--notifies of upcoming events---->Bot((Bot));
+    Bot--adds new date to-->Calendar;
+    Discord_Chat--receives requests for new dates--->Bot
+    Bot--sends upcoming dates-->Discord_Chat
 ```
+
+
