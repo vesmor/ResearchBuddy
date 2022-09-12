@@ -24,11 +24,11 @@ Some Features that would be nice
 To break it down:
 
 1) Make a discord bot that scrapes a certain website and automatically adds conference dates
-  - Python script can be used to scrape the website
-  - Data from scrape can be put into a file
-  - Discord bot will read from that same file periodically and add conference dates based on that
+    - Python script can be used to scrape the website
+    - Data from scrape can be put into a file
+    - Discord bot will read from that same file periodically and add conference dates based on that
 2) Add conference dates using chat commands
-  - Need to figure out a way for the backend to keep track of dates, what calendar are we gonna use etc.
+    - Need to figure out a way for the backend to keep track of dates, what calendar are we gonna use etc.
 3) Way for anyone in the server to subscribe to notifications such as thru email, etc.
 
 
