@@ -1,6 +1,6 @@
-Austin Hyde
-Romsev Charles
-Faith Edwards
+Austin Hyde  
+Romsev Charles  
+Faith Edwards  
 
 
 This project was brought upon by the request of one of the ISUE Lab members, the message was:
@@ -23,9 +23,13 @@ Some Features that would be nice
 
 To break it down:
 
-- Make a discord bot that scrapes a certain website and automatically adds conference dates
+1) Make a discord bot that scrapes a certain website and automatically adds conference dates
   - Python script can be used to scrape the website
   - Data from scrape can be put into a file
   - Discord bot will read from that same file periodically and add conference dates based on that
-- Add conference dates using chat commands
-- Way for anyone in the server to subscribe to notifications such as thru email, etc.
+2) Add conference dates using chat commands
+  - Need to figure out a way for the backend to keep track of dates, what calendar are we gonna use etc.
+3) Way for anyone in the server to subscribe to notifications such as thru email, etc.
+
+
+
