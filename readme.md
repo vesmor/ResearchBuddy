@@ -15,9 +15,9 @@ This project was brought upon by the request of one of the ISUE Lab members, the
 >  - ISMAR
 >  - VRST
 >Some Features that would be nice 
-	> 	 - Add conferences dynamically via a chat command 
-	>	 - Scrape the Conference's website when dates come out to find the abstract deadline and paper deadline 
-	>	 - A way for users in the server to subscribe to the notifications
+> 	 - Add conferences dynamically via a chat command 
+>	 - Scrape the Conference's website when dates come out to find the abstract deadline and paper deadline 
+>	 - A way for users in the server to subscribe to the notifications
 
 
 
