@@ -1,3 +1,4 @@
+
 Austin Hyde  
 Romsev Charles  
 Faith Edwards  
@@ -39,7 +40,7 @@ ___
 	graph TD;
 	website_scraper.py--This code will scrape the website-->Website;
     Website-->Scraper_Output;
-    Scraper_Output--inserts new dates straight to-->Calendar;
+    Scraper_Output--gets read by-->Bot;
     Calendar--notifies of upcoming events---->Bot((Bot));
     Bot--adds new date to-->Calendar;
     Discord_Chat--receives requests for new dates--->Bot
