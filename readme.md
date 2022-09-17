@@ -38,8 +38,12 @@ ___
 ```mermaid
 
 	graph TD;
-	website_scraper.py--This code will periodicially scrape the website-->Website;
-    Website-->Scraper_Output;
+    website_scraper.py--This code will periodicially scrape the websites-->Website[1];
+    website_scraper.py--This code will periodicially scrape the websites-->Website[2];
+    website_scraper.py--This code will periodicially scrape the websites-->Website[3];
+    Website[3]-->Scraper_Output;
+    Website[2]-->Scraper_Output;
+    Website[1]-->Scraper_Output;
     Scraper_Output--gets read by-->Bot;
     Calendar--notifies of upcoming events---->Bot((Bot));
     Bot--adds new date to-->Calendar;
