@@ -1,3 +1,4 @@
+import subprocess
 import discord
 import os
 from dotenv import load_dotenv
@@ -30,24 +31,49 @@ async def helloWorld(message):
         return
     
     await message.respond("Hello everyone! I'm up and alive!")
-    
-@bot.slash_command(name = "list_upcoming_events", description = "enter cmd with parameter of how many upcoming events you would like to see, or else shows next 5")
-async def list_upcoming_events(chat, num = 5 ):
-    num = int(num)
-    events = calendar.show_n_events(num)
-    await chat.send_response("Here are the events:", ephemeral = True)
-    for event in events:
-        tmfmt = '%B %d at %I:%M %p'
-        start = event['start'].get('dateTime', event['start'].get('date'))
-        start = datetime.strftime(dtparse(start), format=tmfmt) #converts googles API date to a better readable format
-        
-        eventResult = event['summary'] + " will happen on " + start
-        await chat.send_followup(content = eventResult, ephemeral = True)
 
-#TEMPORARY COMMAND
+#--------------calendar commands ----------------------#
+
+#list upcoming events   
+@bot.slash_command(name = "list_upcoming_events", description = "enter cmd with parameter of how many upcoming events you would like to see, or else shows next 5")
+async def list_upcoming_events(chat, NumEvents = 5 ):
+    try: 
+        num = int(NumEvents)
+        if(num < 1):
+            raise ValueError
+        else:
+            events = calendar.show_n_events(num)
+            text = "Here are the next " + str(num) + " events:"
+            await chat.send_response(text, ephemeral = True)
+            for event in events:
+                tmfmt = '%B %d at %I:%M %p'
+                start = event['start'].get('dateTime', event['start'].get('date'))
+                start = datetime.strftime(dtparse(start), format=tmfmt) #converts googles API date to a better readable format
+                
+                eventResult = event['summary'] + " will happen on " + start
+                await chat.send_followup(content = eventResult, ephemeral = True)
+    except ValueError:
+        await chat.send_response("num must be greater than 0", ephemeral = True)
+    except TypeError:
+        await chat.send_response("num has to be a positive numerical value ex: 1, 5 or 999", ephemeral = True)
+    
+
+
+
+#TEMPORARY COMMANDS
 @bot.slash_command(name = "shutdown", description = "shutsdown the bot[TEMPORARY COMMAND]")
 async def shutdown_s(chat):
     await chat.respond("NOOO PLEASE DONT SEND ME INTO THE ABYSSS")
+    
+    bot.close()
     exit(0)
+    
+@bot.slash_command(name = "restart", description = "restarts the bot[TEMPORARY COMMAND]")
+async def restart(chat):
+    await chat.respond("I'll be back")
+    path = os.getcwd() + "/run.bat"
+    subprocess.call([path])
+    exit(1)
+    
 
 bot.run(token)

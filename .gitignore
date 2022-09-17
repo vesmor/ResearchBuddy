@@ -1,2 +1,3 @@
 #Ignore enviornment variables with tokens
 .env
+.json
