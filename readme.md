@@ -38,7 +38,7 @@ ___
 ```mermaid
 
 	graph TD;
-    website_scraper.py---->Website_11;
+    website_scraper.py---->Website_1;
     website_scraper.py--This code will periodicially scrape the websites-->Website_2;
     website_scraper.py---->Website_3;
     Website_3-->Scraper_Output;
