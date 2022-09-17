@@ -35,18 +35,19 @@ async def helloWorld(message):
 async def list_upcoming_events(chat, num = 5 ):
     num = int(num)
     events = calendar.show_n_events(num)
+    await chat.send_response("Here are the events:", ephemeral = True)
     for event in events:
-        tmfmt = '%d %B, %H:%M %p'
+        tmfmt = '%B %d at %I:%M %p'
         start = event['start'].get('dateTime', event['start'].get('date'))
         start = datetime.strftime(dtparse(start), format=tmfmt) #converts googles API date to a better readable format
         
-        eventResult = start + " " + event['summary']
-        await chat.respond(eventResult)
+        eventResult = event['summary'] + " will happen on " + start
+        await chat.send_followup(content = eventResult, ephemeral = True)
 
 #TEMPORARY COMMAND
-@bot.slash_command(name = "shutdown", description = "shutsdown the bot")
-async def shutdown(chat):
+@bot.slash_command(name = "shutdown", description = "shutsdown the bot[TEMPORARY COMMAND]")
+async def shutdown_s(chat):
     await chat.respond("NOOO PLEASE DONT SEND ME INTO THE ABYSSS")
-    exit(1)
+    exit(0)
 
 bot.run(token)
