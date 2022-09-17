@@ -16,15 +16,17 @@ from googleapiclient.errors import HttpError
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
+creds = None
+service = None
 
-def main():
-    """Shows basic usage of the Google Calendar API.
-    Prints the start and name of the next 10 events on the user's calendar.
-    """
-    creds = None
+def calendar_setup():
+
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
+    global creds
+    global service
+    
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     # If there are no (valid) credentials available, let the user log in.
@@ -39,30 +41,32 @@ def main():
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
 
-    try:
+    try: 
         service = build('calendar', 'v3', credentials=creds)
-
+    except HttpError as error:
+        print('An error occurred: %s' % error)
+        
+    
+def show_n_events(numEvents):
+    try:    
+        global service
+        
         # Call the Calendar API
         tz = timezone("EST")
         now = datetime.datetime.now(tz).isoformat()  # 'Z' indicates UTC time
-        numEvents = input("How many up comings event would you like to see?\n")
-        print('Getting the upcoming ' + numEvents + ' events')
+        # numEvents = input("How many up comings event would you like to see?\n")
+        print('Getting the upcoming ' + str(numEvents) + ' events')
         events_result = service.events().list(calendarId='primary', timeMin=now,
                                               maxResults=numEvents, singleEvents=True,
                                               orderBy='startTime').execute()
         events = events_result.get('items', [])
 
         if not events:
-            print('No upcoming events found.')
-            return
-
+            return ('No upcoming events found.')
+        return events
         # Prints the start and name of the next num events
-        for event in events:
-            tmfmt = '%d %B, %H:%M %p'
-            start = event['start'].get('dateTime', event['start'].get('date'))
-            start = datetime.datetime.strftime(dtparse(start), format=tmfmt) #converts googles API date to a better readable format
-            print(start, event['summary'])
 
     except HttpError as error:
         print('An error occurred: %s' % error)
+        return ("Sorry an error occurred attempting to reach the Google Calendar")
 
