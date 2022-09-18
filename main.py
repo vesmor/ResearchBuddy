@@ -8,12 +8,24 @@ import json
 from datetime import datetime
 from dateutil.parser import parse as dtparse
 
+
+
+'''
+    custom Exceptions
+'''
+
+class ImpossibleValueError(Exception):
+    pass
+
+
+MAXEVENTS = 7
+
 load_dotenv() #loads all the .env variables
 token = os.getenv('TOKEN') #grab token from env file
 
 #TODO: addmore useful error message
 if token == None: 
-    print("ERROR: No Token found")
+    print("ERROR: No Token found, check you have an .env file in the same directory or token is valid")
     exit(-1)
 
 
@@ -36,11 +48,13 @@ async def helloWorld(message):
 
 #list upcoming events   
 @bot.slash_command(name = "list_upcoming_events", description = "enter cmd with parameter of how many upcoming events you would like to see, or else shows next 5")
-async def list_upcoming_events(chat, NumEvents = 5 ):
+async def list_upcoming_events(chat, numevents = 5 ):
     try: 
-        num = int(NumEvents)
-        if(num < 1):
-            raise ValueError
+        
+        num = int(numevents)
+        
+        if(num < 1 or num >  MAXEVENTS):
+            raise ImpossibleValueError
         else:
             events = calendar.show_n_events(num)
             text = "Here are the next " + str(num) + " events:"
@@ -53,9 +67,9 @@ async def list_upcoming_events(chat, NumEvents = 5 ):
                 eventResult = event['summary'] + " will happen on " + start
                 await chat.send_followup(content = eventResult, ephemeral = True)
     except ValueError:
-        await chat.send_response("num must be greater than 0", ephemeral = True)
-    except TypeError:
-        await chat.send_response("num has to be a positive numerical value ex: 1, 5 or 999", ephemeral = True)
+        await chat.send_response("numevents must be a number.", ephemeral = True)
+    except ImpossibleValueError:
+        await chat.send_response("numevents has to be a positive numerical value between 1 and " + str(MAXEVENTS), ephemeral = True)
     
 
 
