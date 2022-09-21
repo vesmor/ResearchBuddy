@@ -1,3 +1,6 @@
 #Ignore enviornment variables with tokens
 .env
-.json
+run.bat
+credentials.json
+token.json
+discbot-env
