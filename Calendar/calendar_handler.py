@@ -14,7 +14,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 creds = None
 service = None
@@ -70,3 +70,16 @@ def show_n_events(numEvents):
         print('An error occurred: %s' % error)
         return ("Sorry an error occurred attempting to reach the Google Calendar")
 
+
+def add_event():
+    try:
+        created_event= service.events().quickAdd(
+            calendarId= 'primary',
+            text= 'Appointment at Somewhere on September 22nd 10am-10:25am'
+        ).execute()
+        
+        print (created_event['id'])
+        return ("done adding event")
+    except Exception as err:
+        print('An error occured creating an event: %s' % err)
+        return ("error occured while adding event")

@@ -72,9 +72,15 @@ async def list_upcoming_events(chat, numevents = 5 ):
         await chat.send_response("numevents has to be a positive numerical value between 1 and " + str(MAXEVENTS), ephemeral = True)
     
 
+@bot.slash_command(name = "addevent", description = "add an event to the calendar")
+async def add_event(chat):
+    await chat.respond("adding event")
+    exitStatus = calendar.add_event()
+    await chat.respond(exitStatus)
+    #TODO: create way to add to json file keeping track of dates
 
 
-#TEMPORARY COMMANDS
+#------TEMPORARY COMMANDS---------
 @bot.slash_command(name = "shutdown", description = "shutsdown the bot[TEMPORARY COMMAND]")
 async def shutdown_s(chat):
     await chat.respond("NOOO PLEASE DONT SEND ME INTO THE ABYSSS")
