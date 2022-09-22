@@ -71,15 +71,18 @@ def show_n_events(numEvents):
         return ("Sorry an error occurred attempting to reach the Google Calendar")
 
 
-def add_event():
+def add_event(userEvent):
     try:
+        
         created_event= service.events().quickAdd(
             calendarId= 'primary',
-            text= 'Appointment at Somewhere on September 22nd 10am-10:25am'
+            text= userEvent
         ).execute()
         
         print (created_event['id'])
         return ("done adding event")
-    except Exception as err:
+    
+    except HttpError as err:
         print('An error occured creating an event: %s' % err)
         return ("error occured while adding event")
+    

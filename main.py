@@ -1,5 +1,7 @@
 import subprocess
 import discord
+from discord import option
+
 import os
 from dotenv import load_dotenv
 import Calendar.calendar_handler as calendar
@@ -47,7 +49,12 @@ async def helloWorld(message):
 #--------------calendar commands ----------------------#
 
 #list upcoming events   
-@bot.slash_command(name = "list_upcoming_events", description = "enter cmd with parameter of how many upcoming events you would like to see, or else shows next 5")
+@bot.slash_command(name = "list_upcoming_events", description = "list the next few upcoming events")
+@option(
+    "numevents",
+    int,
+    description= ("number of events in the future you'd like to see up to " + str(MAXEVENTS))
+)
 async def list_upcoming_events(chat, numevents = 5 ):
     try: 
         
@@ -72,12 +79,17 @@ async def list_upcoming_events(chat, numevents = 5 ):
         await chat.send_response("numevents has to be a positive numerical value between 1 and " + str(MAXEVENTS), ephemeral = True)
     
 
+#TODO: create way to add to json file keeping track of dates
 @bot.slash_command(name = "addevent", description = "add an event to the calendar")
-async def add_event(chat):
-    await chat.respond("adding event")
-    exitStatus = calendar.add_event()
-    await chat.respond(exitStatus)
-    #TODO: create way to add to json file keeping track of dates
+async def add_event(chat, new_event: str):
+    try:
+        await chat.respond("adding event")
+        exitMessage = calendar.add_event(new_event)
+        await chat.respond(exitMessage)
+    
+    except ValueError:
+        await chat.respond("Input wasn't valid")
+    
 
 
 #------TEMPORARY COMMANDS---------
