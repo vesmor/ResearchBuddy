@@ -61,10 +61,11 @@ def show_n_events(numEvents):
                                               orderBy='startTime').execute()
         events = events_result.get('items', [])
 
-        if not events:
+
+        if events == None:
             return ('No upcoming events found.')
-        return events
-        # Prints the start and name of the next num events
+        else:
+            return events
 
     except HttpError as error:
         print('An error occurred: %s' % error)
@@ -79,8 +80,14 @@ def add_event(userEvent):
             text= userEvent
         ).execute()
         
-        print (created_event['id'])
-        return ("done adding event")
+        tmfmt = '%B %d at %I:%M %p'
+        eventTime = created_event['start'].get('dateTime', created_event['start'].get('date'))
+        eventTime = datetime.datetime.strftime(dtparse(eventTime), format=tmfmt)
+        
+        print (eventTime)
+        eventTime = "Added event '" + str(created_event['summary']) + "' at " + eventTime
+
+        return eventTime
     
     except HttpError as err:
         print('An error occured creating an event: %s' % err)

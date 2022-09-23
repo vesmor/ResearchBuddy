@@ -20,7 +20,7 @@ class ImpossibleValueError(Exception):
     pass
 
 
-MAXEVENTS = 7
+MAXEVENTS = 9999
 
 load_dotenv() #loads all the .env variables
 token = os.getenv('TOKEN') #grab token from env file
@@ -48,6 +48,8 @@ async def helloWorld(message):
 
 #--------------calendar commands ----------------------#
 
+
+#TODO: error handling for an event that has no NULL title
 #list upcoming events   
 @bot.slash_command(name = "list_upcoming_events", description = "list the next few upcoming events")
 @option(
@@ -66,6 +68,8 @@ async def list_upcoming_events(chat, numevents = 5 ):
             events = calendar.show_n_events(num)
             text = "Here are the next " + str(num) + " events:"
             await chat.send_response(text, ephemeral = True)
+            
+            # Prints the start and name of the next num events
             for event in events:
                 tmfmt = '%B %d at %I:%M %p'
                 start = event['start'].get('dateTime', event['start'].get('date'))
@@ -73,6 +77,7 @@ async def list_upcoming_events(chat, numevents = 5 ):
                 
                 eventResult = event['summary'] + " will happen on " + start
                 await chat.send_followup(content = eventResult, ephemeral = True)
+                
     except ValueError:
         await chat.send_response("numevents must be a number.", ephemeral = True)
     except ImpossibleValueError:
@@ -80,6 +85,11 @@ async def list_upcoming_events(chat, numevents = 5 ):
     
 
 #TODO: create way to add to json file keeping track of dates
+@option(
+    "new_event",
+    str,
+    description="event description and date"
+)
 @bot.slash_command(name = "addevent", description = "add an event to the calendar")
 async def add_event(chat, new_event: str):
     try:
@@ -89,6 +99,8 @@ async def add_event(chat, new_event: str):
     
     except ValueError:
         await chat.respond("Input wasn't valid")
+    except KeyError:
+        await chat.respond("Title of event was empty")
     
 
 
