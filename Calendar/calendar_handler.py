@@ -1,4 +1,5 @@
 from __future__ import print_function
+from venv import create
 
 from pytz import timezone
 
@@ -80,11 +81,12 @@ def add_event(userEvent):
             text= userEvent
         ).execute()
         
+        print (created_event['start'])
+        
         tmfmt = '%B %d at %I:%M %p'
         eventTime = created_event['start'].get('dateTime', created_event['start'].get('date'))
         eventTime = datetime.datetime.strftime(dtparse(eventTime), format=tmfmt)
         
-        print (eventTime)
         eventTime = "Added event '" + str(created_event['summary']) + "' at " + eventTime
 
         return eventTime

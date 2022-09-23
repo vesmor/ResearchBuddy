@@ -49,7 +49,6 @@ async def helloWorld(message):
 #--------------calendar commands ----------------------#
 
 
-#TODO: error handling for an event that has no NULL title
 #list upcoming events   
 @bot.slash_command(name = "list_upcoming_events", description = "list the next few upcoming events")
 @option(
@@ -71,12 +70,15 @@ async def list_upcoming_events(chat, numevents = 5 ):
             
             # Prints the start and name of the next num events
             for event in events:
-                tmfmt = '%B %d at %I:%M %p'
-                start = event['start'].get('dateTime', event['start'].get('date'))
-                start = datetime.strftime(dtparse(start), format=tmfmt) #converts googles API date to a better readable format
-                
-                eventResult = event['summary'] + " will happen on " + start
-                await chat.send_followup(content = eventResult, ephemeral = True)
+                try:
+                    tmfmt = '%B %d at %I:%M %p'
+                    start = event['start'].get('dateTime', event['start'].get('date'))
+                    start = datetime.strftime(dtparse(start), format=tmfmt) #converts googles API date to a better readable format
+                    
+                    eventResult = event['summary'] + " will happen on " + start
+                    await chat.send_followup(content = eventResult, ephemeral = True)
+                except KeyError:
+                    pass
                 
     except ValueError:
         await chat.send_response("numevents must be a number.", ephemeral = True)
