@@ -1,7 +1,7 @@
 {
-    "name": "ResearchBuddy",
+    "name": "researchbuddy",
     "description": "Keep ISUE Conference dates organized",
     "main": "main.py",
-    "authors": ["Austin Hyde", "Faith Edwards", "Romsev Charles"],
+    "authors": ["Austin H.", "Faith E.", "Sev C."],
     "dependencies": {}
 }
