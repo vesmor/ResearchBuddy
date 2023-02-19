@@ -20,7 +20,7 @@ class ImpossibleValueError(Exception):
     pass
 
 
-MAXEVENTS = 9999
+MAXEVENTS = 8
 
 load_dotenv() #loads all the .env variables
 token = os.getenv('TOKEN') #grab token from env file
@@ -87,12 +87,12 @@ async def list_upcoming_events(chat, numevents = 5 ):
     
 
 #TODO: create way to add to json file keeping track of dates
+@bot.slash_command(name = "addevent", description = "add an event to the calendar")
 @option(
     "new_event",
     str,
-    description="event description and date"
+    description="event description and date and time"
 )
-@bot.slash_command(name = "addevent", description = "add an event to the calendar")
 async def add_event(chat, new_event: str):
     try:
         await chat.respond("adding event")
@@ -105,6 +105,28 @@ async def add_event(chat, new_event: str):
         await chat.respond("Title of event was empty")
     
 
+#deletes an event
+#TODO: add confirmation message
+@bot.slash_command(name = "deleteevent", description = "add an event to the calendar")
+@option(
+    "event_name",
+    str,
+    description="name of event to be deleted"
+)
+async def delete_event(chat, event_name :str): 
+    statusMessage = calendar.delete_event(event_name)
+    await chat.respond(statusMessage)
+    
+    # def check(m): # checking if it's the same user and channel
+    #     return m.author == chat.author and m.channel == chat.channel
+    
+    # try: # waiting for message
+    #     response = await bot.wait_for('message', check=check, timeout=10.0) # timeout - how long bot waits for message (in seconds)
+    #     if response.content.lower() in ("yes", "y"):
+            
+    # except TimeoutError: # returning after timeout
+    #     return
+    
 
 #------TEMPORARY COMMANDS---------
 @bot.slash_command(name = "shutdown", description = "shutsdown the bot[TEMPORARY COMMAND]")

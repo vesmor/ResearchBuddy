@@ -73,6 +73,7 @@ def show_n_events(numEvents):
         return ("Sorry an error occurred attempting to reach the Google Calendar")
 
 
+#adds event from string and "smartly" parses it to find a description and valid date
 def add_event(userEvent):
     try:
         
@@ -87,11 +88,45 @@ def add_event(userEvent):
         eventTime = created_event['start'].get('dateTime', created_event['start'].get('date'))
         eventTime = datetime.datetime.strftime(dtparse(eventTime), format=tmfmt)
         
-        eventTime = "Added event '" + str(created_event['summary']) + "' at " + eventTime
+        eventTime = "Added event '" + str(created_event['summary']) + "' at " + str(eventTime) + " to Calendar"
 
         return eventTime
     
     except HttpError as err:
         print('An error occured creating an event: %s' % err)
         return ("error occured while adding event")
+    
+    
+    
+
+def delete_event(eventName :str):
+    
+    global service
+    
+    page_token = None
+    
+    #go thru calendar page by page
+    while True:
+        events = service.events().list(calendarId='primary', pageToken=page_token).execute() 
+        
+        for event in events['items']:
+            try:
+               
+                #delete event
+                if ( str(event['summary']).casefold() == eventName.casefold() ):
+                    service.events(calendarId='primary', eventId=event['id']).execute()
+                    return ("Deleted " + event['summary'])
+                
+                #keep looking for it
+                else:
+                    pass
+            except KeyError:
+                pass
+            
+        page_token = events.get('nextPageToken')
+        
+        #until theres no more pages of events to go thru
+        if not page_token: 
+            return ("No event found by that name")
+        
     
