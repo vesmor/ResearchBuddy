@@ -10,7 +10,10 @@ import json
 from datetime import datetime
 from dateutil.parser import parse as dtparse
 
-
+'''
+    If there's a problem logging into the google calendar or you get a "bad auth request" or "invalid_grant" error 
+    just delete the token.json file and rerun the program
+'''
 
 '''
     custom Exceptions
@@ -23,7 +26,7 @@ class ImpossibleValueError(Exception):
 MAXEVENTS = 8
 
 load_dotenv() #loads all the .env variables
-token = os.getenv('TOKEN') #grab token from env file
+token = os.getenv('TOKEN') #grab token for discord from env file
 
 #TODO: addmore useful error message
 if token == None: 
