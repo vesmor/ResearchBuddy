@@ -99,7 +99,7 @@ async def list_upcoming_events(chat, numevents = 5 ):
     
 
 #TODO: create way to add to json file keeping track of dates
-@bot.slash_command(name = "addevent", description = "add an event to the calendar")
+@bot.slash_command(name = "add_event", description = "add an event to the calendar")
 @option(
     "new_event",
     str,
@@ -119,7 +119,7 @@ async def add_event(chat, new_event: str):
 
 #deletes an event
 #TODO: add confirmation message
-@bot.slash_command(name = "deleteevent", description = "add an event to the calendar")
+@bot.slash_command(name = "delete_event", description = "add an event to the calendar")
 @option(
     "event_name",
     str,
@@ -139,6 +139,8 @@ async def delete_event(chat, event_name :str):
     # except TimeoutError: # returning after timeout
     #     return
     
+
+# @bot.slash_command(name = "search_event")
 
 #------TEMPORARY COMMANDS---------
 @bot.slash_command(name = "shutdown", description = "shutsdown the bot[TEMPORARY COMMAND]")
