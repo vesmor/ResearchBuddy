@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 import Calendar.calendar_handler as calendar
 import json
 
-from datetime import datetime
+import datetime
 from dateutil.parser import parse as dtparse
 
 '''
@@ -131,7 +131,28 @@ async def delete_event(chat, event_name :str):
     
     
 
-# @bot.slash_command(name = "search_event", description = "search for calendar event")
+@bot.slash_command(name = "search_event", description = "get the date and info for a calendar event")
+@option(
+    "event_name",
+    str,
+    description="name of event to look for"
+)
+async def search_event(chat, event_name :str):
+    
+    event = calendar.search_for_event(event_name)
+    
+    if (event == None):
+        await chat.respond("No event of that name found.")
+        return
+    
+    #format event time
+    tmfmt = '%B %d at %I:%M %p'
+    eventDateTime = event['start'].get('dateTime', event['start'].get('date'))
+    eventDateTime = datetime.datetime.strftime(dtparse(eventDateTime), format=tmfmt)
+    
+    event_desc = str(event['summary']) + " is happening on " + str(eventDateTime)
+    await chat.respond(event_desc)
+    
 
 #------TEMPORARY COMMANDS---------
 @bot.slash_command(name = "shutdown", description = "shutsdown the bot[TEMPORARY COMMAND]")

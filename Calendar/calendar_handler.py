@@ -131,3 +131,29 @@ def delete_event(eventName :str):
             return ("No event found by that name")
         
     
+def search_for_event(eventName: str):
+    global service
+    
+    page_token = None
+    
+    #go thru calendar page by page
+    while True:
+        events = service.events().list(calendarId='primary', pageToken=page_token).execute() 
+        
+        for event in events['items']:
+            try:
+               
+                #return found event
+                if ( str(event['summary']).casefold() == eventName.casefold() ):
+                    return event
+                
+                #keep looking for it
+                else:
+                    pass
+            except KeyError:
+                pass
+            
+        page_token = events.get('nextPageToken')
+        
+        if not page_token:
+            return None
