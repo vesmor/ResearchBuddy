@@ -51,7 +51,7 @@ async def on_ready():
     print("Calendar setup successful")
     print('Logged in as {0.user}'.format(bot))
     
-@bot.slash_command(name = "hello", description = "Hello world to ResearchBuddy")
+@bot.slash_command(name = "hello", description = "say Hello to ResearchBuddy")
 async def helloWorld(message):
     if message.author == bot.user:
         return
@@ -119,7 +119,7 @@ async def add_event(chat, new_event: str):
 
 #deletes an event
 #TODO: add confirmation message
-@bot.slash_command(name = "delete_event", description = "add an event to the calendar")
+@bot.slash_command(name = "delete_event", description = "delete an event from the calendar using name")
 @option(
     "event_name",
     str,
@@ -129,18 +129,9 @@ async def delete_event(chat, event_name :str):
     statusMessage = calendar.delete_event(event_name)
     await chat.respond(statusMessage)
     
-    # def check(m): # checking if it's the same user and channel
-    #     return m.author == chat.author and m.channel == chat.channel
-    
-    # try: # waiting for message
-    #     response = await bot.wait_for('message', check=check, timeout=10.0) # timeout - how long bot waits for message (in seconds)
-    #     if response.content.lower() in ("yes", "y"):
-            
-    # except TimeoutError: # returning after timeout
-    #     return
     
 
-# @bot.slash_command(name = "search_event")
+# @bot.slash_command(name = "search_event", description = "search for calendar event")
 
 #------TEMPORARY COMMANDS---------
 @bot.slash_command(name = "shutdown", description = "shutsdown the bot[TEMPORARY COMMAND]")
