@@ -19,6 +19,15 @@ from dateutil.parser import parse as dtparse
     custom Exceptions
 '''
 
+
+
+'''
+    TODO:
+        Way to delete all events maybe[think about this]
+        
+'''
+
+
 class ImpossibleValueError(Exception):
     pass
 
@@ -52,8 +61,7 @@ async def helloWorld(message):
 #--------------calendar commands ----------------------#
 
 
-#list upcoming events   
-@bot.slash_command(name = "list_upcoming_events", description = "list the next few upcoming events")
+@bot.slash_command(name = "upcoming_events", description = "list the next few upcoming events")
 @option(
     "numevents",
     int,
@@ -81,7 +89,8 @@ async def list_upcoming_events(chat, numevents = 5 ):
                     eventResult = event['summary'] + " will happen on " + start
                     await chat.send_followup(content = eventResult, ephemeral = True)
                 except KeyError:
-                    pass
+                    await chat.send_response("No events found", ephemeral = True)
+            
                 
     except ValueError:
         await chat.send_response("numevents must be a number.", ephemeral = True)

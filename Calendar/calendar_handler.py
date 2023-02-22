@@ -84,11 +84,12 @@ def add_event(userEvent):
         
         print (created_event['start'])
         
+        #format the event time
         tmfmt = '%B %d at %I:%M %p'
         eventTime = created_event['start'].get('dateTime', created_event['start'].get('date'))
         eventTime = datetime.datetime.strftime(dtparse(eventTime), format=tmfmt)
         
-        eventTime = "Added event '" + str(created_event['summary']) + "' at " + str(eventTime) + " to Calendar"
+        eventTime = "Added event '" + str(created_event['summary']) + "' on " + str(eventTime) + " to Calendar"
 
         return eventTime
     
@@ -114,7 +115,7 @@ def delete_event(eventName :str):
                
                 #delete event
                 if ( str(event['summary']).casefold() == eventName.casefold() ):
-                    service.events(calendarId='primary', eventId=event['id']).execute()
+                    service.events().delete(calendarId='primary', eventId=event['id']).execute()
                     return ("Deleted " + event['summary'])
                 
                 #keep looking for it
