@@ -23,7 +23,7 @@ from dateutil.parser import parse as dtparse
 
 '''
     TODO:
-        Way to delete all events maybe[think about this]
+        Way to delete ALL events maybe[think about this]
         
 '''
 
@@ -84,7 +84,7 @@ async def list_upcoming_events(chat, numevents = 5 ):
                 try:
                     tmfmt = '%B %d at %I:%M %p'
                     start = event['start'].get('dateTime', event['start'].get('date'))
-                    start = datetime.strftime(dtparse(start), format=tmfmt) #converts googles API date to a better readable format
+                    start = datetime.datetime.strftime(dtparse(start), format=tmfmt) #converts googles API date to a better readable format
                     
                     eventResult = event['summary'] + " will happen on " + start
                     await chat.send_followup(content = eventResult, ephemeral = True)
