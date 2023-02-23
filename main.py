@@ -1,6 +1,27 @@
+
+'''
+    TODO:
+        
+        -Way to delete ALL events maybe[think about this]]
+        
+        -Delete all events on a certain date (WITH CONFIRMATION)
+        
+        -Add a task to periodically read from JSON file of events that
+        will be added to Calendar
+        
+'''
+
+
+'''
+    If there's a problem logging into the google calendar or you get a "bad auth request" or "invalid_grant" error 
+    just delete the token.json file and rerun the program
+'''
+
+
 import subprocess
 import discord
 from discord import option
+from discord.ext import commands, tasks
 
 import os
 from dotenv import load_dotenv
@@ -10,24 +31,10 @@ import json
 import datetime
 from dateutil.parser import parse as dtparse
 
-'''
-    If there's a problem logging into the google calendar or you get a "bad auth request" or "invalid_grant" error 
-    just delete the token.json file and rerun the program
-'''
 
 '''
     custom Exceptions
 '''
-
-
-
-'''
-    TODO:
-        Way to delete ALL events maybe[think about this]
-        
-'''
-
-
 class ImpossibleValueError(Exception):
     pass
 
@@ -57,6 +64,9 @@ async def helloWorld(message):
         return
     
     await message.respond("Hello everyone! I'm up and alive!")
+
+
+
 
 #--------------calendar commands ----------------------#
 
@@ -103,7 +113,7 @@ async def list_upcoming_events(chat, numevents = 5 ):
 @option(
     "new_event",
     str,
-    description="event description and date and time"
+    description = "Enter an event description followed by date and time"
 )
 async def add_event(chat, new_event: str):
     try:

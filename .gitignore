@@ -4,3 +4,4 @@ run.bat
 credentials.json
 token.json
 discbot-env
+*.code-workspace
