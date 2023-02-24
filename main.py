@@ -9,6 +9,8 @@
         -Add a task to periodically read from JSON file of events that
         will be added to Calendar
         
+        -Log all applicable events to console and possible an error output folder
+        
 '''
 
 
@@ -39,25 +41,34 @@ class ImpossibleValueError(Exception):
     pass
 
 
+#-----------------------CONSTANTS---------------------------------#
 MAXEVENTS = 8
 
 load_dotenv() #loads all the .env variables
-token = os.getenv('TOKEN') #grab token for discord from env file
+TOKEN = os.getenv('TOKEN') #grab token for discord from env file
 
 #TODO: addmore useful error message
-if token == None: 
-    print("ERROR: No Token found, check you have an .env file in the same directory or token is valid")
+if TOKEN == None: 
+    print("ERROR: No Token for discord found, check you have an .env file in the same directory or token is valid")
     exit(-1)
-
 
 bot = discord.Bot()
 
+EVENTSJSON = "Calendar/events.json"
+
+#---------------------------------------------------------------------------------------------------------------#
+
+
+
+#TODO: place calendar successful message in a place that actually checks if it was successful
 @bot.event
 async def on_ready():
     calendar.calendar_setup()
     print("Calendar setup successful")
     print('Logged in as {0.user}'.format(bot))
+    check_json_for_events.start()
     
+   
 @bot.slash_command(name = "hello", description = "say Hello to ResearchBuddy")
 async def helloWorld(message):
     if message.author == bot.user:
@@ -65,7 +76,49 @@ async def helloWorld(message):
     
     await message.respond("Hello everyone! I'm up and alive!")
 
-
+#TODO: events in json file need to be deleted once they've passed
+#TODO: place event strings into parser and change the newData value to false
+@tasks.loop(seconds = 10)
+async def check_json_for_events():
+    #read in json
+    #turn it into a string
+    #pass it into the calendar.add_event()
+    
+    print("\nRunning json parsing job:\n")
+    
+    events_file = open(EVENTSJSON)
+    fileExists = os.path.isfile(EVENTSJSON)
+    if (fileExists == False):
+        print("{filename} does not exist".format(filename = EVENTSJSON))
+        return
+    
+    events = json.load(events_file)
+    if (events[0]["newData"] == False):
+        events_file.close()
+        print("\tNo new data to add")
+        return
+    
+    
+    for event in events[1:]:    #ignore the first element in loop as it holds newData value
+        try:
+            
+            eventString = ""
+        
+            if(event["endTimeUnspecified"]):
+                eventString = str(event["name"]) + " on " + str(event["start"])
+            else:    
+                eventString = str(event["name"]) + " from " + str(event["start"]) + " to " + str(event["end"])
+            
+            print("\t{str}".format(str=eventString))
+            
+            
+        except KeyError as ke:
+            print("\nERROR:\n\t{err}: key is trying to be accessed. It might not exist in the events.json file\n".format(err = ke))
+    
+    
+    print("\n")   
+    events_file.close()
+    
 
 
 #--------------calendar commands ----------------------#
@@ -180,4 +233,4 @@ async def restart(chat):
     exit(1)
     
 
-bot.run(token)
+bot.run(TOKEN)
