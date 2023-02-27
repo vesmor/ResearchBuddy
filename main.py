@@ -121,6 +121,11 @@ async def check_json_for_events():
         except KeyError as ke:
             print("\nERROR:\n\t{err}: key is trying to be accessed. It might not exist in the events.json file\n".format(err = ke))
     
+    #file has been read and has nothing new to add
+    events[0]["newData"] = False
+    events_file.seek(0) #set pointer back to beginning to write
+    json.dump(events, events_file, indent = 4)
+    events_file.truncate() #remove remaining parts
     
     print("\n")   
     events_file.close()
