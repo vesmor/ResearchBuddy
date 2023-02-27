@@ -4,17 +4,15 @@
         
         -Way to delete ALL events maybe[think about this]]
         
-        -Delete all events on a certain date (WITH CONFIRMATION)
-        
-        -Add a task to periodically read from JSON file of events that
-        will be added to Calendar
+        - Way to delete all events on a certain date (WITH CONFIRMATION)
         
         -Log all applicable events to console and possible an error output folder
-        
+
+        -Scrape website for event dates       
 '''
 
 
-'''
+'''README:
     If there's a problem logging into the google calendar or you get a "bad auth request" or "invalid_grant" error 
     just delete the token.json file and rerun the program
 '''
