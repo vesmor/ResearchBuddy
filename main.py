@@ -104,8 +104,8 @@ async def check_json_for_events():
         print("\tNo new data to add")
         return
     
-    
-    for event in events[1:]:    #ignore the first element in loop as it holds newData value
+    failedStr = "error occured while adding event"
+    for event in events[1:]:    #ignore the first element in events because it holds newData value
         try:
             
             eventString = ""
@@ -116,11 +116,26 @@ async def check_json_for_events():
                 eventString = str(event["name"]) + " from " + str(event["start"]) + " to " + str(event["end"])
             
             print("\t{str}".format(str=eventString))
+            returnState = calendar.add_event(eventString)
+            returnState = str(returnState)
+
+            if (returnState == failedStr):
+                print("There was a problem adding {eventName} to the Calendar from events.json".format(eventName = event["name"]))
+                pass
+            else:
+                events.remove(event) #remove event from file since we're adding it to calendar
             
             
         except KeyError as ke:
             print("\nERROR:\n\t{err}: key is trying to be accessed. It might not exist in the events.json file\n".format(err = ke))
-    
+            events_file.close()
+            return
+        except Exception as err:
+            print("Something in general went wrong while trying to run json checking task or do something within that task")
+            print("Here is the error message {errm}".format(errm=err))
+            events_file.close()
+            return
+            
     #file has been read and has nothing new to add
     events[0]["newData"] = False
     events_file.seek(0) #set pointer back to beginning to write
