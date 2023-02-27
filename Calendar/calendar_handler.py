@@ -94,7 +94,7 @@ def add_event(userEvent):
         return eventTime
     
     except HttpError as err:
-        print('An error occured creating an event: %s' % err)
+        print('An error occured trying to create an event: %s' % err)
         return ("error occured while adding event")
     
     
