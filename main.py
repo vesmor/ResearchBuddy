@@ -76,24 +76,30 @@ async def helloWorld(message):
     
     await message.respond("Hello everyone! I'm up and alive!")
 
+
+
 #TODO: events in json file need to be deleted once they've passed
 #TODO: place event strings into parser and change the newData value to false
 @tasks.loop(seconds = 10)
 async def check_json_for_events():
-    #read in json
-    #turn it into a string
+
     #pass it into the calendar.add_event()
     
     print("\nRunning json parsing job:\n")
     
-    events_file = open(EVENTSJSON)
+    #check file exists first
     fileExists = os.path.isfile(EVENTSJSON)
     if (fileExists == False):
-        print("{filename} does not exist".format(filename = EVENTSJSON))
+        print("{filename} does not exist or is named incorrectly".format(filename = EVENTSJSON))
+        print("Stopping the check_json_for_events task. Try renaming or adding an events.json file and restarting bot.")
+        check_json_for_events.cancel()
         return
     
+    events_file = open(EVENTSJSON, "r+") #read and write access
+    
     events = json.load(events_file)
-    if (events[0]["newData"] == False):
+    newData = events[0]["newData"]
+    if (not newData):
         events_file.close()
         print("\tNo new data to add")
         return
