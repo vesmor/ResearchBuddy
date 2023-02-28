@@ -7,6 +7,8 @@
         - Way to delete all events on a certain date (WITH CONFIRMATION)
         
         -Log all applicable events to console and possible an error output folder
+        
+        -Way to modify the event
 
         -Scrape website for event dates       
 '''
