@@ -1,0 +1,23 @@
+[
+    {
+        "newData": false
+    },
+    {
+        "name": "fun stuff",
+        "start": "03/2/23 :00pm",
+        "end": "3/20/23 7:00pm",
+        "endTimeUnspecified": false
+    },
+    {
+        "name": "project review",
+        "start": "03/25/23 7:00pm",
+        "end": "3/25/23 9:00pm",
+        "endTimeUnspecified": false
+    },
+    {
+        "name": "End Project Celebration",
+        "start": "03/26/23 5am",
+        "end": "",
+        "endTimeUnspecified": true
+    }
+]

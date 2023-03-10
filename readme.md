@@ -50,5 +50,3 @@ ___
     Discord_Chat--receives requests for new dates--->Bot
     Bot--sends upcoming dates-->Discord_Chat
 ```
-
-

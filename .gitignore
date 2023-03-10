@@ -1,3 +1,9 @@
 #Ignore enviornment variables with tokens
 .env
+run.bat
+credentials.json
+token.json
+discbot-env
+*.code-workspace
+Calendar/__pycache__
 .json
