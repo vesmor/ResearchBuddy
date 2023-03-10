@@ -11,6 +11,11 @@
         -Way to modify the event
 
         -Scrape website for event dates       
+        
+        -End program if token is invalid and a new one needs to be granted and print that problem and how to resolve it to
+            a file or console
+        
+        -Find a way to renew token to google calendar automatically
 '''
 
 
