@@ -6,3 +6,4 @@ token.json
 discbot-env
 *.code-workspace
 Calendar/__pycache__
+.json
