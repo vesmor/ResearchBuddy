@@ -27,26 +27,38 @@ datesRaw = websiteHTML.find_all("td", {"data-mtr-content": "Dates"})
 eventNamesRaw = websiteHTML.find_all("td", {"data-mtr-content": "Conference Name"})
 
 
+
+# get the text of the dates and put it in list
 dates = []
 for date in datesRaw:
-    dates.append(date.string)
+    dates.append(date.text)
 
+# get text of each event names in the raw data and put them in a list
 eventNames = []
 for name in eventNamesRaw:
-    eventNames.append(name.string)
-    
 
+    #extract any links that might be in the same tag as the conference name
+    for a in name.findAll('a', href=True):
+        a.extract()
+
+    nameText = name.text
+    print(nameText)
+    eventNames.append(nameText)
+
+
+# zip the the list into a tuple together so its the name and date
 conferences = zip_longest(eventNames, dates, fillvalue="nothing provided")
 
 
+offset = 3  #shift by 3 because first two events aren't titled
 for index, event in enumerate(conferences): #enumerate so we can use index numbers instead of the stupid pythonic shit
     try:
-        print(event)
+        # print(event)
         fileLine = str(
-                    index.__str__() + ": \t\t" + eventNames[index].__str__()+ 
-                    "\n\t\t" + dates[index+3].__str__() + "\n\n"    #shift by 3 because first two events aren't titled
+                        str(eventNames[index]) + "\n" + 
+                        str(dates[index + offset]) + "\n\n"
                     )
-        
+
         file.write(fileLine) 
 
     except Exception as err:
