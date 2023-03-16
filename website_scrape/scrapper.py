@@ -20,32 +20,11 @@ time.sleep(1)
 websiteHTML = BeautifulSoup(website.text, 'html.parser')
 
 
-file = open("output.txt", "w", encoding="utf-8")
+file = open("fileout.txt", "w", encoding="utf-8")
 
 
 datesRaw = websiteHTML.find_all("td", {"data-mtr-content": "Dates"})
 eventNamesRaw = websiteHTML.find_all("td", {"data-mtr-content": "Conference Name"})
-
-# for linebreak in websiteHTML.find_all('br'):
-#     linebreak.extract()
-    
-    
-# html = open("website.html", "w", encoding="utf-8")
-# html.write(websiteHTML.prettify())
-# html.close()
-# file.write(websiteHTML.prettify())
-
-# tbd = websiteHTML.tbody
-
-# trs = tbd.nextSibling
-# # file.write(list(trs).__str__())
-
-
-# for row in trs:
-#     for rowData in row.contents:
-#         file.write(rowData.__str__())
-#         file.write("\n")
-
 
 
 dates = []
