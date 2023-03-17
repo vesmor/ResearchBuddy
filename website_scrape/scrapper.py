@@ -1,31 +1,24 @@
 import requests
 from bs4 import BeautifulSoup
 from itertools import zip_longest
-import time
+import json
+import os
 # from selenium import webdriver
 
 # ACM CHI 
 # (This would include CHI conference, CHI Late-breaking work, TOCHI, CHI-Play, etc.)
 
-# Work on getting why some elements arent getting read in properly
-# it seems to be because of a <br> or break line
 
 # Make a request to the website
 url = 'https://sigchi.org/conferences/upcoming-conferences/'
 website = requests.get(url)
 
-time.sleep(1)
 
 # Parse the HTML content using BeautifulSoup
 websiteHTML = BeautifulSoup(website.text, 'html.parser')
 
-
-file = open("fileout.txt", "w", encoding="utf-8")
-
-
 datesRaw = websiteHTML.find_all("td", {"data-mtr-content": "Dates"})
 eventNamesRaw = websiteHTML.find_all("td", {"data-mtr-content": "Conference Name"})
-
 
 
 # get the text of the dates and put it in list
@@ -42,27 +35,39 @@ for name in eventNamesRaw:
         a.extract()
 
     nameText = name.text
-    print(nameText)
+    # print(nameText)
     eventNames.append(nameText)
 
 
-# zip the the list into a tuple together so its the name and date
-conferences = zip_longest(eventNames, dates, fillvalue="nothing provided")
-
-
 offset = 3  #shift by 3 because first two events aren't titled
-for index, event in enumerate(conferences): #enumerate so we can use index numbers instead of the stupid pythonic shit
-    try:
-        # print(event)
-        fileLine = str(
-                        str(eventNames[index]) + "\n" + 
-                        str(dates[index + offset]) + "\n\n"
-                    )
+conferences = zip_longest(eventNames, dates[offset:], fillvalue="nothing provided")# zip the the list into a tuple together so its the name and date
 
-        file.write(fileLine) 
 
-    except Exception as err:
-        print("not working cuz: {e}".format(e=err))
-        pass
+living_dir = os.path.dirname(os.path.realpath(__file__)) #get the directory this script lives in
 
-file.close()
+path_parent = os.path.dirname(living_dir)
+
+eventsJSONPath = path_parent + "/Calendar/events_ws.json"
+
+# dump the conference events into the json file
+
+# remember to set the newData to true
+with open(eventsJSONPath, "w") as json_file:
+    conferences = list(conferences)
+    # print(conferences[0][0])
+    for index, event in enumerate(conferences): #enumerate so we can use index numbers instead of the stupid pythonic shit
+        try:
+            
+            eventObj = {
+                
+                
+                
+            }
+            
+            # print(event[1])
+            # print(event[1])
+            # print("\n\n")
+
+        except Exception as err:
+            print("not working cuz: {e}".format(e=err))
+            pass
