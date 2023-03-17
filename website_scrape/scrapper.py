@@ -31,7 +31,7 @@ eventNames = []
 for name in eventNamesRaw:
 
     #extract any links that might be in the same tag as the conference name
-    for a in name.findAll('a', href=True):
+    for a in name.find_all('a', href=True):
         a.extract()
 
     nameText = name.text
@@ -53,26 +53,25 @@ eventsJSONPath = path_parent + "/Calendar/events_ws.json"
 
 # remember to set the newData to true
 with open(eventsJSONPath, "w+") as json_file:
-    
+
     conferences = list(conferences)
-    print(conferences.__len__())
-    
+
     eventObjArr = []
-    
+
     # print(conferences[0][0])
     for index, event in enumerate(conferences): #enumerate so we can use index numbers instead of the stupid pythonic shit
         try:
-            
-            
-            print(event[1])
-            # date_span = event[1].split(" - ")
+
+
+            print(event[0])
+            date_span = str(event[1]).split('–')
             # print(date_span)
             # start_date = date_span[0]
             # end_date = date_span[1]
             # print("start: " + start_date + " end: " + end_date)
-            
+
             eventObj = {
-                
+
                 "hello":"World"
                 
             }
