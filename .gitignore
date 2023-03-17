@@ -8,3 +8,6 @@ discbot-env
 Calendar/__pycache__
 .json
 .vscode
+
+#temp
+*.txt

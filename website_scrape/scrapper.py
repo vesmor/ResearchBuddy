@@ -52,22 +52,36 @@ eventsJSONPath = path_parent + "/Calendar/events_ws.json"
 # dump the conference events into the json file
 
 # remember to set the newData to true
-with open(eventsJSONPath, "w") as json_file:
+with open(eventsJSONPath, "w+") as json_file:
+    
     conferences = list(conferences)
+    print(conferences.__len__())
+    
+    eventObjArr = []
+    
     # print(conferences[0][0])
     for index, event in enumerate(conferences): #enumerate so we can use index numbers instead of the stupid pythonic shit
         try:
             
+            
+            print(event[1])
+            # date_span = event[1].split(" - ")
+            # print(date_span)
+            # start_date = date_span[0]
+            # end_date = date_span[1]
+            # print("start: " + start_date + " end: " + end_date)
+            
             eventObj = {
                 
-                
+                "hello":"World"
                 
             }
-            
-            # print(event[1])
-            # print(event[1])
-            # print("\n\n")
+            eventObjArr.append(eventObj)
 
         except Exception as err:
             print("not working cuz: {e}".format(e=err))
             pass
+
+    
+    eventObjArr.insert(0, { "len": eventObjArr.__len__()})
+    json.dump(eventObjArr, json_file, indent = 4)
