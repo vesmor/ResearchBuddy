@@ -161,6 +161,15 @@ async def check_json_for_events():
     events_file.close()
     
 
+# @tasks.loop(seconds = 86400)
+# async def watch_for_events():
+    
+#     print("\nChecking for upcoming events\n")
+    
+#     today = datetime.date.today()
+    
+    
+
 
 #--------------calendar commands ----------------------#
 
@@ -186,7 +195,7 @@ async def list_upcoming_events(chat, numevents = 5 ):
             # Prints the start and name of the next num events
             for event in events:
                 try:
-                    tmfmt = '%B %d at %I:%M %p'
+                    tmfmt = '%B %d %Y at %I:%M %p'  # Month Day Year "at" Hour:Minute (pm or am)
                     start = event['start'].get('dateTime', event['start'].get('date'))
                     start = datetime.datetime.strftime(dtparse(start), format=tmfmt) #converts googles API date to a better readable format
                     
@@ -263,15 +272,20 @@ async def search_event(chat, event_name :str):
 async def shutdown_s(chat):
     await chat.respond("NOOO PLEASE DONT SEND ME INTO THE ABYSSS")
     
-    bot.close()
-    exit(0)
+    await bot.clear()
+    await bot.close()
     
 @bot.slash_command(name = "restart", description = "restarts the bot[TEMPORARY COMMAND]")
 async def restart(chat):
     await chat.respond("I'll be back")
-    path = os.getcwd() + "/run.bat"
-    subprocess.call([path])
-    exit(1)
+    try:
+        path = os.getcwd() + "/run.bat"
+        subprocess.call([path])
+        await bot.clear()
+        await bot.close()
+    except Exception:
+        await bot.clear()
+        await bot.close()
     
 
 bot.run(TOKEN)

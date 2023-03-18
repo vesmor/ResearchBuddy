@@ -85,7 +85,7 @@ def add_event(userEvent):
         print (created_event['start'])
         
         #format the event time
-        tmfmt = '%B %d at %I:%M %p'
+        tmfmt = '%B %d %Y at %I:%M %p' # Month Day Year "at" Hour:Minute (pm or am)
         eventTime = created_event['start'].get('dateTime', created_event['start'].get('date'))
         eventTime = datetime.datetime.strftime(dtparse(eventTime), format=tmfmt)
         
