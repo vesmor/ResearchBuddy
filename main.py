@@ -82,6 +82,8 @@ async def on_ready():
     print("Now scrapping SigChi")
     # Uncomment following line to scrape the website on startup
     # scrapper.scrape()
+    
+    watch_for_events.start()
 
    
 @bot.slash_command(name = "hello", description = "say Hello to ResearchBuddy")
@@ -92,6 +94,7 @@ async def helloWorld(message):
     await message.respond("Hello everyone! I'm up and alive!")
 
 
+#_____________________Task Loops_____________________#
 
 #TODO: events in json file need to be deleted once they've passed
 #TODO: place event strings into parser and change the newData value to false
@@ -161,14 +164,40 @@ async def check_json_for_events():
     events_file.close()
     
 
-# @tasks.loop(seconds = 86400)
-# async def watch_for_events():
+@tasks.loop(seconds = 86400)
+async def watch_for_events():
     
-#     print("\nChecking for upcoming events\n")
+    print("\nChecking for upcoming events\n")
     
-#     today = datetime.date.today()
+    today = datetime.date.today()
+    events = calendar.show_n_events(5)
     
-    
+    for event in events:
+        
+        # seperate event into month day year and put it into datetime's date obj
+        
+        event = event['start'].get('dateTime', event['start'].get('date'))
+        
+        month = '%-m'  # Month number
+        month = datetime.datetime.strftime(dtparse(event), format=month)
+        
+        day = '%d'
+        day = datetime.datetime.strftime(dtparse(event), format=day)
+
+        year = '%Y'
+        year = datetime.datetime.strftime(dtparse(event), format=year)
+        
+        print(year, " ", month, " ", day)
+        
+        event = datetime.date(int(year), int(month), int(day))
+        
+        timetil = event - today
+        
+        print(timetil.days)
+        
+        
+ 
+ #------------------------------------------------------#   
 
 
 #--------------calendar commands ----------------------#
