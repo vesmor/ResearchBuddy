@@ -131,7 +131,7 @@ def delete_event(eventName :str):
             return ("No event found by that name")
         
     
-def search_for_event(eventName: str):
+def search_for_event(targetEvent: str):
     global service
     
     page_token = None
@@ -144,7 +144,7 @@ def search_for_event(eventName: str):
             try:
                
                 #return found event
-                if ( str(event['summary']).casefold() == eventName.casefold() ):
+                if ( targetEvent.casefold() in str(event['summary']).casefold() ):
                     return event
                 
                 #keep looking for it
