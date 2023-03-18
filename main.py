@@ -35,12 +35,13 @@ from discord.ext import commands, tasks
 
 import os
 from dotenv import load_dotenv
-import Calendar.calendar_handler as calendar
 import json
 
 import datetime
 from dateutil.parser import parse as dtparse
 
+import Calendar.calendar_handler as calendar
+import website_scrape.scrapper as scrapper
 
 '''
     custom Exceptions
@@ -51,6 +52,8 @@ class ImpossibleValueError(Exception):
 
 #-----------------------CONSTANTS---------------------------------#
 MAXEVENTS = 8
+JSON_LOOP_TIME_S = 60
+
 
 load_dotenv() #loads all the .env variables
 TOKEN = os.getenv('TOKEN') #grab token for discord from env file
@@ -76,6 +79,10 @@ async def on_ready():
     print('Logged in as {0.user}'.format(bot))
     check_json_for_events.start()
     
+    print("Now scrapping SigChi")
+    # Uncomment following line to scrape the website on startup
+    # scrapper.scrape()
+
    
 @bot.slash_command(name = "hello", description = "say Hello to ResearchBuddy")
 async def helloWorld(message):
@@ -88,7 +95,7 @@ async def helloWorld(message):
 
 #TODO: events in json file need to be deleted once they've passed
 #TODO: place event strings into parser and change the newData value to false
-@tasks.loop(seconds = 10)
+@tasks.loop(seconds = JSON_LOOP_TIME_S)
 async def check_json_for_events():
 
     #pass it into the calendar.add_event()
