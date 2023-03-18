@@ -5,9 +5,8 @@ credentials.json
 token.json
 discbot-env
 *.code-workspace
-Calendar/__pycache__
+__pycache__
 .json
 .vscode
 
-#temp
 *.txt
