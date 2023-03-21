@@ -165,7 +165,7 @@ async def check_json_for_events():
     events_file.close()
     
 
-@tasks.loop(minutes = 1) # 24 hours in a day, check every day
+@tasks.loop(hours = 24) # 24 hours in a day, check every day
 async def watch_for_events():
     
     print("\nChecking for upcoming events\n")
