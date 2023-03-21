@@ -2,7 +2,7 @@
 '''
     TODO:
         
-        -Way to delete ALL events maybe[think about this]]
+        -Way to delete ALL events maybe[think about this]
         
         - Way to delete all events on a certain date (WITH CONFIRMATION)
         
@@ -17,8 +17,7 @@
         
         -Find a way to renew token to google calendar automatically
         
-        - Work on a notification system for when an event is upcoming probably by checking each day if theres an event coming soon
-        and if its close to the date just add it back
+        - Make sure there is no event of the same name already on the calendar so we dont have duplicates during a scrape
 '''
 
 
@@ -38,6 +37,7 @@ from dotenv import load_dotenv
 import json
 
 import datetime
+from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse as dtparse
 
 import Calendar.calendar_handler as calendar
@@ -51,8 +51,10 @@ class ImpossibleValueError(Exception):
 
 
 #-----------------------CONSTANTS---------------------------------#
-MAXEVENTS = 8
-JSON_LOOP_TIME_S = 60
+MAXEVENTS = 8 # max amount of events that users can check for in the future
+JSON_LOOP_TIME_S = 300 # frequency bot will check events.json for new events in seconds
+EVENTCHECKFREQ_H = 24 # frequency bot will check the calendar for upcoming events
+#-----------------------------------------------------------------#
 
 
 load_dotenv() #loads all the .env variables
@@ -78,20 +80,23 @@ async def on_ready():
     print("Calendar setup successful")
     print('Logged in as {0.user}'.format(bot))
     check_json_for_events.start()
-    
+
     print("Now scrapping SigChi")
     # Uncomment following line to scrape the website on startup
-    # scrapper.scrape()
+    scrapper.scrape()
+
+    watch_for_events.start()
 
    
 @bot.slash_command(name = "hello", description = "say Hello to ResearchBuddy")
 async def helloWorld(message):
     if message.author == bot.user:
         return
-    
+
     await message.respond("Hello everyone! I'm up and alive!")
 
 
+#_____________________Task Loops_____________________#
 
 #TODO: events in json file need to be deleted once they've passed
 #TODO: place event strings into parser and change the newData value to false
@@ -99,9 +104,9 @@ async def helloWorld(message):
 async def check_json_for_events():
 
     #pass it into the calendar.add_event()
-    
+
     print("\nRunning json parsing job:\n")
-    
+
     #check file exists first
     fileExists = os.path.isfile(EVENTSJSON)
     if (fileExists == False):
@@ -109,27 +114,27 @@ async def check_json_for_events():
         print("Stopping the check_json_for_events task. Try renaming or adding an events.json file and restarting bot.")
         check_json_for_events.cancel()
         return
-    
+
     events_file = open(EVENTSJSON, "r+") #read and write access
-    
+
     events = json.load(events_file)
     newData = events[0]["newData"]
     if (not newData):
         events_file.close()
         print("\tNo new data to add")
         return
-    
+
     failedStr = "error occured while adding event"
     for event in events[1:]:    #ignore the first element in events because it holds newData value
         try:
-            
+
             eventString = ""
-        
+
             if(event["endTimeUnspecified"]):
                 eventString = str(event["name"]) + " on " + str(event["start"])
             else:    
                 eventString = str(event["name"]) + " from " + str(event["start"]) + " to " + str(event["end"])
-            
+
             print("\t{str}".format(str=eventString))
             returnState = calendar.add_event(eventString)
             returnState = str(returnState)
@@ -139,8 +144,8 @@ async def check_json_for_events():
                 pass
             else:
                 events.remove(event) #remove event from file since we're adding it to calendar
-            
-            
+    
+
         except KeyError as ke:
             print("\nERROR:\n\t{err}: key is trying to be accessed. It might not exist in the events.json file\n".format(err = ke))
             events_file.close()
@@ -150,16 +155,63 @@ async def check_json_for_events():
             print("Here is the error message {errm}".format(errm=err))
             events_file.close()
             return
-            
+
     #file has been read and has nothing new to add
     events[0]["newData"] = False
     events_file.seek(0) #set pointer back to beginning to write
     json.dump(events, events_file, indent = 4)
     events_file.truncate() #remove remaining parts
-    
+
     print("\n")   
     events_file.close()
-    
+
+
+@tasks.loop(hours = EVENTCHECKFREQ_H) # 24 hours in a day, check every day
+async def watch_for_events():
+
+    print("\nChecking for upcoming events\n")
+
+    today = datetime.date.today()
+    events = calendar.show_n_events(5)
+
+    channel = bot.get_channel(1014618531427516446)
+
+    for event in events:
+        
+        event_name = event['summary']
+        
+        # seperate event into month day year and put it into datetime's date obj
+        event = event['start'].get('dateTime', event['start'].get('date'))
+        
+        month = '%-m'  # Month number
+        month = datetime.datetime.strftime(dtparse(event), format=month)
+        
+        day = '%d'
+        day = datetime.datetime.strftime(dtparse(event), format=day)
+
+        year = '%Y'
+        year = datetime.datetime.strftime(dtparse(event), format=year)
+        
+        # print(year, " ", month, " ", day)
+        
+        event_date = datetime.date(int(year), int(month), int(day))
+        
+        time_til_event_in = event_date - today
+        
+        month_from_today = today + relativedelta(months = +1)
+        week_from_today = today + relativedelta(weeks = +1)
+        
+        if (event_date == week_from_today):
+            print(event_name, "is 1 week away")
+            await channel.send(content = "{e_name} is 1 week away".format(e_name = event_name))
+        
+        elif(event_date == month_from_today):
+            print(event_name, "is 1 month away")
+            await channel.send(content = "{e_name} is 1 month away".format(e_name = event_name))
+        
+        
+ 
+ #------------------------------------------------------#   
 
 
 #--------------calendar commands ----------------------#
@@ -186,7 +238,7 @@ async def list_upcoming_events(chat, numevents = 5 ):
             # Prints the start and name of the next num events
             for event in events:
                 try:
-                    tmfmt = '%B %d at %I:%M %p'
+                    tmfmt = '%B %d %Y at %I:%M %p'  # Month Day Year "at" Hour:Minute (pm or am)
                     start = event['start'].get('dateTime', event['start'].get('date'))
                     start = datetime.datetime.strftime(dtparse(start), format=tmfmt) #converts googles API date to a better readable format
                     
@@ -263,15 +315,20 @@ async def search_event(chat, event_name :str):
 async def shutdown_s(chat):
     await chat.respond("NOOO PLEASE DONT SEND ME INTO THE ABYSSS")
     
-    bot.close()
-    exit(0)
+    await bot.clear()
+    await bot.close()
     
 @bot.slash_command(name = "restart", description = "restarts the bot[TEMPORARY COMMAND]")
 async def restart(chat):
     await chat.respond("I'll be back")
-    path = os.getcwd() + "/run.bat"
-    subprocess.call([path])
-    exit(1)
+    try:
+        path = os.getcwd() + "/run.bat"
+        subprocess.call([path])
+        await bot.clear()
+        await bot.close()
+    except Exception:
+        await bot.clear()
+        await bot.close()
     
 
 bot.run(TOKEN)
