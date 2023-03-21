@@ -1,27 +1,33 @@
 
 '''
-    TODO:
+    TODO: List of general stuff to add to bot
         
-        -Way to delete ALL events maybe[think about this]
+          Way to delete ALL events maybe[think about this]
         
-        - Way to delete all events on a certain date (WITH CONFIRMATION)
+         - Way to delete all events on a certain date (WITH CONFIRMATION)
         
-        -Log all applicable events to console and possible an error output folder
+         -Log all applicable events to console and possible an error output folder
         
-        -Way to modify the event
-
-        -Scrape website for event dates       
+         -Way to modify the event    
         
-        -End program if token is invalid and a new one needs to be granted and print that problem and how to resolve it to
+         -End program if token is invalid and a new one needs to be granted and print that problem and how to resolve it to
             a file or console
         
-        -Find a way to renew token to google calendar automatically
+         -Find a way to renew token to google calendar automatically
         
-        - Make sure there is no event of the same name already on the calendar so we dont have duplicates during a scrape
+         - Make sure there is no event of the same name already on the calendar so we dont have duplicates during a scrape
+        
+         # TODO: Write the script to scrape more of the websites
+                [x] SigChi    
+                [ ]  IEEE Vr   
+                [ ]  CSCW      
+                [ ]  ISMAR      "https://ismar23.org/"
+                [ ]  VRST       
 '''
 
 
-'''README:
+'''
+    README:
     If there's a problem logging into the google calendar or you get a "bad auth request" or "invalid_grant" error 
     just delete the token.json file and rerun the program
 '''
@@ -98,8 +104,7 @@ async def helloWorld(message):
 
 #_____________________Task Loops_____________________#
 
-#TODO: events in json file need to be deleted once they've passed
-#TODO: place event strings into parser and change the newData value to false
+
 @tasks.loop(seconds = JSON_LOOP_TIME_S)
 async def check_json_for_events():
 
@@ -254,7 +259,7 @@ async def list_upcoming_events(chat, numevents = 5 ):
         await chat.send_response("numevents has to be a positive numerical value between 1 and " + str(MAXEVENTS), ephemeral = True)
     
 
-#TODO: create way to add to json file keeping track of dates
+
 @bot.slash_command(name = "add_event", description = "add an event to the calendar")
 @option(
     "new_event",
@@ -274,7 +279,7 @@ async def add_event(chat, new_event: str):
     
 
 #deletes an event
-#TODO: add confirmation message
+#TODO: add confirmation message ex: "Are you sure you want to delete [event_name]"
 @bot.slash_command(name = "delete_event", description = "delete an event from the calendar using name")
 @option(
     "event_name",
