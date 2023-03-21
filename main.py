@@ -17,8 +17,7 @@
         
         -Find a way to renew token to google calendar automatically
         
-        - Work on a notification system for when an event is upcoming probably by checking each day if theres an event coming soon
-        and if its close to the date just add it back
+        - Make sure there is no event of the same name already on the calendar so we dont have duplicates during a scrape
 '''
 
 
