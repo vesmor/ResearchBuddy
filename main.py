@@ -2,7 +2,7 @@
 '''
     TODO:
         
-        -Way to delete ALL events maybe[think about this]]
+        -Way to delete ALL events maybe[think about this]
         
         - Way to delete all events on a certain date (WITH CONFIRMATION)
         
@@ -38,6 +38,7 @@ from dotenv import load_dotenv
 import json
 
 import datetime
+from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse as dtparse
 
 import Calendar.calendar_handler as calendar
@@ -164,7 +165,7 @@ async def check_json_for_events():
     events_file.close()
     
 
-@tasks.loop(seconds = 86400)
+@tasks.loop(hours = 24) # 24 hours in a day, check every day
 async def watch_for_events():
     
     print("\nChecking for upcoming events\n")
@@ -174,8 +175,9 @@ async def watch_for_events():
     
     for event in events:
         
-        # seperate event into month day year and put it into datetime's date obj
+        event_name = event['summary']
         
+        # seperate event into month day year and put it into datetime's date obj
         event = event['start'].get('dateTime', event['start'].get('date'))
         
         month = '%-m'  # Month number
@@ -187,13 +189,19 @@ async def watch_for_events():
         year = '%Y'
         year = datetime.datetime.strftime(dtparse(event), format=year)
         
-        print(year, " ", month, " ", day)
+        # print(year, " ", month, " ", day)
         
-        event = datetime.date(int(year), int(month), int(day))
+        event_date = datetime.date(int(year), int(month), int(day))
         
-        timetil = event - today
+        time_til_event_in = event_date - today
         
-        print(timetil.days)
+        month_from_today = today + relativedelta(months = +1)
+        week_from_today = today + relativedelta(weeks = +1)
+        
+        if (event_date == week_from_today):
+            print(event_name, "is 1 week away")
+        elif(event_date == month_from_today):
+            print(event_name, "is 1 month away")
         
         
  
