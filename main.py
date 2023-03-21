@@ -165,13 +165,15 @@ async def check_json_for_events():
     events_file.close()
     
 
-@tasks.loop(hours = 24) # 24 hours in a day, check every day
+@tasks.loop(minutes = 1) # 24 hours in a day, check every day
 async def watch_for_events():
     
     print("\nChecking for upcoming events\n")
     
     today = datetime.date.today()
     events = calendar.show_n_events(5)
+    
+    channel = bot.get_channel(1014618531427516446)
     
     for event in events:
         
@@ -200,8 +202,11 @@ async def watch_for_events():
         
         if (event_date == week_from_today):
             print(event_name, "is 1 week away")
+            await channel.send(content = "{e_name} is 1 week away".format(e_name = event_name))
+        
         elif(event_date == month_from_today):
             print(event_name, "is 1 month away")
+            await channel.send(content = "{e_name} is 1 month away".format(e_name = event_name))
         
         
  
