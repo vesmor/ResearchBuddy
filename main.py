@@ -52,8 +52,10 @@ class ImpossibleValueError(Exception):
 
 
 #-----------------------CONSTANTS---------------------------------#
-MAXEVENTS = 8
-JSON_LOOP_TIME_S = 60
+MAXEVENTS = 8 # max amount of events that users can check for in the future
+JSON_LOOP_TIME_S = 300 # frequency bot will check events.json for new events in seconds
+EVENTCHECKFREQ_H = 24 # frequency bot will check the calendar for upcoming events
+#-----------------------------------------------------------------#
 
 
 load_dotenv() #loads all the .env variables
@@ -79,11 +81,11 @@ async def on_ready():
     print("Calendar setup successful")
     print('Logged in as {0.user}'.format(bot))
     check_json_for_events.start()
-    
+
     print("Now scrapping SigChi")
     # Uncomment following line to scrape the website on startup
-    # scrapper.scrape()
-    
+    scrapper.scrape()
+
     watch_for_events.start()
 
    
@@ -91,7 +93,7 @@ async def on_ready():
 async def helloWorld(message):
     if message.author == bot.user:
         return
-    
+
     await message.respond("Hello everyone! I'm up and alive!")
 
 
@@ -103,9 +105,9 @@ async def helloWorld(message):
 async def check_json_for_events():
 
     #pass it into the calendar.add_event()
-    
+
     print("\nRunning json parsing job:\n")
-    
+
     #check file exists first
     fileExists = os.path.isfile(EVENTSJSON)
     if (fileExists == False):
@@ -113,27 +115,27 @@ async def check_json_for_events():
         print("Stopping the check_json_for_events task. Try renaming or adding an events.json file and restarting bot.")
         check_json_for_events.cancel()
         return
-    
+
     events_file = open(EVENTSJSON, "r+") #read and write access
-    
+
     events = json.load(events_file)
     newData = events[0]["newData"]
     if (not newData):
         events_file.close()
         print("\tNo new data to add")
         return
-    
+
     failedStr = "error occured while adding event"
     for event in events[1:]:    #ignore the first element in events because it holds newData value
         try:
-            
+
             eventString = ""
-        
+
             if(event["endTimeUnspecified"]):
                 eventString = str(event["name"]) + " on " + str(event["start"])
             else:    
                 eventString = str(event["name"]) + " from " + str(event["start"]) + " to " + str(event["end"])
-            
+
             print("\t{str}".format(str=eventString))
             returnState = calendar.add_event(eventString)
             returnState = str(returnState)
@@ -143,8 +145,8 @@ async def check_json_for_events():
                 pass
             else:
                 events.remove(event) #remove event from file since we're adding it to calendar
-            
-            
+    
+
         except KeyError as ke:
             print("\nERROR:\n\t{err}: key is trying to be accessed. It might not exist in the events.json file\n".format(err = ke))
             events_file.close()
@@ -154,27 +156,27 @@ async def check_json_for_events():
             print("Here is the error message {errm}".format(errm=err))
             events_file.close()
             return
-            
+
     #file has been read and has nothing new to add
     events[0]["newData"] = False
     events_file.seek(0) #set pointer back to beginning to write
     json.dump(events, events_file, indent = 4)
     events_file.truncate() #remove remaining parts
-    
+
     print("\n")   
     events_file.close()
-    
 
-@tasks.loop(hours = 24) # 24 hours in a day, check every day
+
+@tasks.loop(hours = EVENTCHECKFREQ_H) # 24 hours in a day, check every day
 async def watch_for_events():
-    
+
     print("\nChecking for upcoming events\n")
-    
+
     today = datetime.date.today()
     events = calendar.show_n_events(5)
-    
+
     channel = bot.get_channel(1014618531427516446)
-    
+
     for event in events:
         
         event_name = event['summary']
