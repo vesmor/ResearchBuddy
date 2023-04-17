@@ -1,8 +1,4 @@
-
-Austin H.  
 Romsev C.  
-Faith E. 
-
 
 ___
 ### Table of Contents
