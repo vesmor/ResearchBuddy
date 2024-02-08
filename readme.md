@@ -1,6 +1,3 @@
-Romsev C.  
- 
-
 ___
 ### Table of Contents
   
@@ -98,5 +95,6 @@ pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-
 #### Troubleshooting
 If you run the bot and get a "bad auth request" (invalid_grant) just delete the generated "tokens.json" file and rerun the program
 
+___
 ### Contributors
 - [Romsev Charles](github.com/vesmor)
