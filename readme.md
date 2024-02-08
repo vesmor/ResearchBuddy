@@ -10,6 +10,7 @@ ___
 - [Code Interaction Ecosystem](#code-interaction-ecosystem)
 - [How to contribute](#how-to-contribute)
   - [Troubleshooting](#troubleshooting)
+- [Contributors](#Contributors)
 
 ___
 
@@ -96,3 +97,6 @@ pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-
   ```
 #### Troubleshooting
 If you run the bot and get a "bad auth request" (invalid_grant) just delete the generated "tokens.json" file and rerun the program
+
+### Contributors
+- [Romsev Charles](github.com/vesmor)
